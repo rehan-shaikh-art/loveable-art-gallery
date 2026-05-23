@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Loveable Art Gallery - Live Multi-Auction</title>
+    <!-- Loading the real-time communication line library -->
+    <script src="https://socket.io"></script>
     <style>
         body {
             background-color: #0d0d0f;
@@ -13,7 +15,6 @@
             padding: 20px;
         }
         
-        /* Idea 3: About the Artist Premium Profile Header */
         .artist-profile {
             max-width: 1200px;
             margin: 20px auto 40px auto;
@@ -75,7 +76,6 @@
             margin-bottom: 40px;
         }
 
-        /* Idea 2: Multi-Painting Responsive Grid Matrix */
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
@@ -180,7 +180,6 @@
             background-color: #d97706;
         }
 
-        /* Idea 1: Live Bid History Activity Logs Layout */
         .history-box {
             margin-top: 20px;
             background-color: #0d0d0f;
@@ -220,7 +219,6 @@
 </head>
 <body>
 
-    <!-- Idea 3: About the Artist Section -->
     <div class="artist-profile">
         <div class="artist-avatar">🎨</div>
         <div class="artist-details">
@@ -237,10 +235,9 @@
     <h1 class="gallery-title">Loveable Live Auction Matrix</h1>
     <p class="gallery-subtitle">Premium Original Canvases Up for Global Bidding</p>
 
-    <!-- Idea 2: Multi-Item Architecture Matrix -->
     <div class="gallery-grid">
         
-        <!-- Painting 1 Container -->
+        <!-- Painting 1 Card -->
         <div class="art-card" id="art-1">
             <div class="art-image-container">
                 <img src="painting.jpg" alt="The Messy Middle" class="art-image">
@@ -255,7 +252,6 @@
                 </div>
                 <button class="bid-btn">Place Live Bid</button>
                 
-                <!-- Idea 1: Live Logs -->
                 <div class="history-box">
                     <div class="history-title">Bidding Activity Ledger</div>
                     <ul class="history-list">
@@ -265,7 +261,7 @@
             </div>
         </div>
 
-        <!-- Painting 2 Container -->
+        <!-- Painting 2 Card -->
         <div class="art-card" id="art-2">
             <div class="art-image-container">
                 <img src="painting.jpg" alt="Algorithmic Chaos" class="art-image" style="filter: hue-rotate(90deg);">
@@ -289,7 +285,7 @@
             </div>
         </div>
 
-        <!-- Painting 3 Container -->
+        <!-- Painting 3 Card -->
         <div class="art-card" id="art-3">
             <div class="art-image-container">
                 <img src="painting.jpg" alt="Visions of Mhow" class="art-image" style="filter: hue-rotate(180deg);">
@@ -298,91 +294,3 @@
                 <h3 class="art-title">Visions of Mhow</h3>
                 <p class="art-author">Fine Impasto Acrylic • 3 x 5 ft</p>
                 <div class="timer" data-seconds="4200">⏳ Loading Timer...</div>
-                <div class="price-box">Current Highest Bid: <strong>₹85,000</strong></div>
-                <div class="bid-input-container">
-                    <input type="number" class="custom-bid-input" placeholder="Min increment +₹5,000">
-                </div>
-                <button class="bid-btn">Place Live Bid</button>
-                
-                <div class="history-box">
-                    <div class="history-title">Bidding Activity Ledger</div>
-                    <ul class="history-list">
-                        <li class="history-item"><span>Corporate Office Indore</span><span>₹85,000</span></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <script>
-        document.querySelectorAll('.art-card').forEach((card, index) => {
-            const artId = card.id; 
-            const bidBtn = card.querySelector('.bid-btn');
-            const bidInput = card.querySelector('.custom-bid-input');
-            const priceDisplay = card.querySelector('.price-box strong');
-            const historyList = card.querySelector('.history-list');
-            const timerElement = card.querySelector('.timer');
-            
-            let defaultBid = parseInt(priceDisplay.textContent.replace(/[₹,]/g, ''));
-            let timeLeft = parseInt(timerElement.getAttribute('data-seconds'));
-
-            // Core Database Engine: Pull existing values if available
-            let storedBid = localStorage.getItem(artId + "_bid");
-            let storedHistory = localStorage.getItem(artId + "_history");
-
-            if (storedBid) {
-                priceDisplay.textContent = "₹" + parseInt(storedBid).toLocaleString('en-IN');
-            }
-            if (storedHistory) {
-                historyList.innerHTML = storedHistory;
-            }
-
-            bidBtn.addEventListener('click', () => {
-                let activeBid = storedBid ? parseInt(storedBid) : defaultBid;
-                const userVal = parseInt(bidInput.value);
-
-                if (isNaN(userVal)) {
-                    alert("⚠️ Please type a bid valuation amount first!");
-                    return;
-                }
-                if (userVal <= activeBid) {
-                    alert("❌ Your valuation must exceed the current active bid!");
-                    return;
-                }
-
-                storedBid = userVal;
-                priceDisplay.textContent = "₹" + storedBid.toLocaleString('en-IN');
-                bidInput.value = "";
-
-                const logItem = document.createElement('li');
-                logItem.className = 'history-item';
-                logItem.innerHTML = `<span>Collector Terminal</span><span>₹${storedBid.toLocaleString('en-IN')}</span>`;
-                historyList.insertBefore(logItem, historyList.firstChild);
-
-                // Commit variables securely to local storage
-                localStorage.setItem(artId + "_bid", storedBid);
-                localStorage.setItem(artId + "_history", historyList.innerHTML);
-            });
-
-            const clock = setInterval(() => {
-                if (timeLeft <= 0) {
-                    clearInterval(clock);
-                    timerElement.textContent = "🛑 Auction Closed";
-                    bidBtn.disabled = true;
-                    bidBtn.style.backgroundColor = "#27272a";
-                    bidBtn.style.color = "#71717a";
-                    bidBtn.textContent = "Resolved";
-                    bidInput.disabled = true;
-                    return;
-                }
-                timeLeft--;
-                let h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
-                let m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
-                let s = (timeLeft % 60).toString().padStart(2, '0');
-                timerElement.textContent = `⏳ Live Clock: ${h}h : ${m}m : ${s}s`;
-            }, 1000);
-        });
-    </script>
-</body>
-</html>
