@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loveable Art Gallery - Live Multi-Auction</title>
+    <style>
+        body {
+            background-color: #0d0d0f;
+            color: #e2e8f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        /* Idea 3: About the Artist Premium Profile Header */
+        .artist-profile {
+            max-width: 1200px;
+            margin: 20px auto 40px auto;
+            background: linear-gradient(135deg, #1e1e24 0%, #121214 100%);
+            border: 1px solid #2d2d34;
+            border-radius: 16px;
+            padding: 30px;
+            display: flex;
+            gap: 30px;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        .artist-avatar {
+            font-size: 4.5rem;
+            background-color: #27272a;
+            width: 110px;
+            height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            border: 3px solid #bba14f;
+        }
+        .artist-details h2 {
+            margin: 0 0 10px 0;
+            color: #f59e0b;
+        }
+        .artist-details p {
+            margin: 5px 0;
+            color: #94a3b8;
+            line-height: 1.5;
+        }
+        .badge-container {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .badge {
+            background-color: #27272a;
+            border: 1px solid #bba14f;
+            color: #bba14f;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        h1.gallery-title {
+            text-align: center;
+            color: #f59e0b;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        p.gallery-subtitle {
+            text-align: center;
+            color: #71717a;
+            margin-bottom: 40px;
+        }
+
+        /* Idea 2: Multi-Painting Responsive Grid Matrix */
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .art-card {
+            background-color: #16161a;
+            border: 1px solid #232329;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+        }
+        .art-image-container {
+            width: 100%;
+            background-color: #09090b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .art-image {
+            max-width: 100%;
+            max-height: 300px;
+            height: auto;
+            width: auto;
+            object-fit: contain;
+            border: 6px solid #bba14f;
+            outline: 1px solid #f59e0b;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+        }
+        .art-info {
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+        .art-title {
+            font-size: 1.4rem;
+            margin: 0 0 5px 0;
+            color: #e2e8f0;
+        }
+        .art-author {
+            color: #71717a;
+            margin: 0 0 15px 0;
+            font-size: 0.95rem;
+        }
+        .timer {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.1rem;
+            background-color: rgba(239, 68, 68, 0.1);
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .price-box {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        .price-box strong {
+            color: #f59e0b;
+            font-size: 1.3rem;
+        }
+        .bid-input-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+        .custom-bid-input {
+            flex: 1;
+            background-color: #0d0d0f;
+            border: 1px solid #3f3f46;
+            color: #e2e8f0;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .custom-bid-input:focus {
+            border-color: #f59e0b;
+        }
+        .bid-btn {
+            background-color: #f59e0b;
+            color: #0d0d0f;
+            border: none;
+            width: 100%;
+            padding: 14px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+        .bid-btn:hover {
+            background-color: #d97706;
+        }
+
+        /* Idea 1: Live Bid History Activity Logs Layout */
+        .history-box {
+            margin-top: 20px;
+            background-color: #0d0d0f;
+            border: 1px solid #232329;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .history-title {
+            font-size: 0.85rem;
+            color: #a1a1aa;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 1px;
+            border-bottom: 1px solid #232329;
+            padding-bottom: 4px;
+        }
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            max-height: 100px;
+            overflow-y: auto;
+            font-size: 0.9rem;
+        }
+        .history-item {
+            padding: 6px 0;
+            border-bottom: 1px dashed #18181b;
+            color: #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+        }
+        .history-item:first-child {
+            color: #f59e0b;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Idea 3: About the Artist Section -->
+    <div class="artist-profile">
+        <div class="artist-avatar">🎨</div>
+        <div class="artist-details">
+            <h2>Mohammed Rehan Shaikh</h2>
+            <p>Software Engineer (B.Tech CS-IT, IPS Academy) & Fine Art Canvas Painter. Merging algorithmic execution logic with fine-art expressions to shape the future of creative digital technology.</p>
+            <div class="badge-container">
+                <span class="badge">🏆 5x Cultural Champion</span>
+                <span class="badge">♟️ Chess Strategist</span>
+                <span class="badge">🏊 Competitive Swimmer</span>
+            </div>
+        </div>
+    </div>
+
+    <h1 class="gallery-title">Loveable Live Auction Matrix</h1>
+    <p class="gallery-subtitle">Premium Original Canvases Up for Global Bidding</p>
+
+    <!-- Idea 2: Multi-Item Architecture Matrix -->
+    <div class="gallery-grid">
+        
+        <!-- Painting 1 Container -->
+        <div class="art-card" id="art-1">
+            <div class="art-image-container">
+                <img src="painting.jpg" alt="The Messy Middle" class="art-image">
+            </div>
+            <div class="art-info">
+                <h3 class="art-title">The Messy Middle</h3>
+                <p class="art-author">Oil on Canvas • 3 x 4 ft</p>
+                <div class="timer" data-seconds="9912">⏳ Loading Timer...</div>
+                <div class="price-box">Current Highest Bid: <strong>₹55,000</strong></div>
+                <div class="bid-input-container">
+                    <input type="number" class="custom-bid-input" placeholder="Min increment +₹5,000">
+                </div>
+                <button class="bid-btn">Place Live Bid</button>
+                
+                <!-- Idea 1: Live Logs -->
+                <div class="history-box">
+                    <div class="history-title">Bidding Activity Ledger</div>
+                    <ul class="history-list">
+                        <li class="history-item"><span>Collector from Mumbai (Base)</span><span>₹55,000</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painting 2 Container -->
+        <div class="art-card" id="art-2">
+            <div class="art-image-container">
+                <img src="painting.jpg" alt="Algorithmic Chaos" class="art-image" style="filter: hue-rotate(90deg);">
+            </div>
+            <div class="art-info">
+                <h3 class="art-title">Algorithmic Chaos</h3>
+                <p class="art-author">Heavy Texture Acrylic • 4 x 4 ft</p>
+                <div class="timer" data-seconds="14400">⏳ Loading Timer...</div>
+                <div class="price-box">Current Highest Bid: <strong>₹70,000</strong></div>
+                <div class="bid-input-container">
+                    <input type="number" class="custom-bid-input" placeholder="Min increment +₹5,000">
+                </div>
+                <button class="bid-btn">Place Live Bid</button>
+                
+                <div class="history-box">
+                    <div class="history-title">Bidding Activity Ledger</div>
+                    <ul class="history-list">
+                        <li class="history-item"><span>Gallery Curator from Pune</span><span>₹70,000</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Painting 3 Container -->
+        <div class="art-card" id="art-3">
+            <div class="art-image-container">
+                <img src="painting.jpg" alt="Visions of Mhow" class="art-image" style="filter: hue-rotate(180deg);">
+            </div>
+            <div class="art-info">
+                <h3 class="art-title">Visions of Mhow</h3>
+                <p class="art-author">Fine Impasto Acrylic • 3 x 5 ft</p>
+                <div class="timer" data-seconds="4200">⏳ Loading Timer...</div>
+                <div class="price-box">Current Highest Bid: <strong>₹85,000</strong></div>
+                <div class="bid-input-container">
+                    <input type="number" class="custom-bid-input" placeholder="Min increment +₹5,000">
+                </div>
+                <button class="bid-btn">Place Live Bid</button>
+                
+                <div class="history-box">
+                    <div class="history-title">Bidding Activity Ledger</div>
+                    <ul class="history-list">
+                        <li class="history-item"><span>Corporate Office Indore</span><span>₹85,000</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        document.querySelectorAll('.art-card').forEach((card, index) => {
+            const artId = card.id; 
+            const bidBtn = card.querySelector('.bid-btn');
+            const bidInput = card.querySelector('.custom-bid-input');
+            const priceDisplay = card.querySelector('.price-box strong');
+            const historyList = card.querySelector('.history-list');
+            const timerElement = card.querySelector('.timer');
+            
+            let defaultBid = parseInt(priceDisplay.textContent.replace(/[₹,]/g, ''));
+            let timeLeft = parseInt(timerElement.getAttribute('data-seconds'));
+
+            // Core Database Engine: Pull existing values if available
+            let storedBid = localStorage.getItem(artId + "_bid");
+            let storedHistory = localStorage.getItem(artId + "_history");
+
+            if (storedBid) {
+                priceDisplay.textContent = "₹" + parseInt(storedBid).toLocaleString('en-IN');
+            }
+            if (storedHistory) {
+                historyList.innerHTML = storedHistory;
+            }
+
+            bidBtn.addEventListener('click', () => {
+                let activeBid = storedBid ? parseInt(storedBid) : defaultBid;
+                const userVal = parseInt(bidInput.value);
+
+                if (isNaN(userVal)) {
+                    alert("⚠️ Please type a bid valuation amount first!");
+                    return;
+                }
+                if (userVal <= activeBid) {
+                    alert("❌ Your valuation must exceed the current active bid!");
+                    return;
+                }
+
+                storedBid = userVal;
+                priceDisplay.textContent = "₹" + storedBid.toLocaleString('en-IN');
+                bidInput.value = "";
+
+                const logItem = document.createElement('li');
+                logItem.className = 'history-item';
+                logItem.innerHTML = `<span>Collector Terminal</span><span>₹${storedBid.toLocaleString('en-IN')}</span>`;
+                historyList.insertBefore(logItem, historyList.firstChild);
+
+                // Commit variables securely to local storage
+                localStorage.setItem(artId + "_bid", storedBid);
+                localStorage.setItem(artId + "_history", historyList.innerHTML);
+            });
+
+            const clock = setInterval(() => {
+                if (timeLeft <= 0) {
+                    clearInterval(clock);
+                    timerElement.textContent = "🛑 Auction Closed";
+                    bidBtn.disabled = true;
+                    bidBtn.style.backgroundColor = "#27272a";
+                    bidBtn.style.color = "#71717a";
+                    bidBtn.textContent = "Resolved";
+                    bidInput.disabled = true;
+                    return;
+                }
+                timeLeft--;
+                let h = Math.floor(timeLeft / 3600).toString().padStart(2, '0');
+                let m = Math.floor((timeLeft % 3600) / 60).toString().padStart(2, '0');
+                let s = (timeLeft % 60).toString().padStart(2, '0');
+                timerElement.textContent = `⏳ Live Clock: ${h}h : ${m}m : ${s}s`;
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
